@@ -10,27 +10,27 @@ app.use(express.static('build'))
 
 
 var morgan = require('morgan')
-morgan.token('json', function (req, res) {
-    if (req.body) {
-        return JSON.stringify(req.body)
-    } else {
-        return ''
-    }
+morgan.token('json', function (request) {
+	if (request.body) {
+		return JSON.stringify(request.body)
+	} else {
+		return ''
+	}
 })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :json'))
 
 
 const errorHandler = (error, request, response, next) => {
-    console.error(error.message)
+	console.error(error.message)
 
-    if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id' })
-    } else if (error.name === 'ValidationError') {
-        return response.status(400).json({ error: error.message })
-    }
+	if (error.name === 'CastError') {
+		return response.status(400).send({ error: 'malformatted id' })
+	} else if (error.name === 'ValidationError') {
+		return response.status(400).json({ error: error.message })
+	}
     
 
-    next(error)
+	next(error)
 }
 app.use(errorHandler)
 
@@ -45,26 +45,26 @@ app.use(errorHandler)
 
 
 app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1>')
+	res.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/persons', (request, response) => {
-    //res.json(persons)
-    console.log(Person)
-    Person.find({}).then(p => { response.json(p) })
+	//res.json(persons)
+	console.log(Person)
+	Person.find({}).then(p => { response.json(p) })
 })
 
 app.get('/api/info', (request, response) => {
     
-    Person.find({}).then(results => {
-        const numEntries = results.length
-        response.send(`<p>Phonebook has ${numEntries} entries.</p>
+	Person.find({}).then(results => {
+		const numEntries = results.length
+		response.send(`<p>Phonebook has ${numEntries} entries.</p>
         <p>${new Date().toString()}</p>`)
-    })
+	})
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-    /*     const id = Number(request.params.id)
+	/*     const id = Number(request.params.id)
         const p = persons.find(person => person.id === id)
         if (p) {
             response.json(p)
@@ -72,13 +72,13 @@ app.get('/api/persons/:id', (request, response, next) => {
             response.status(404).end()
         } */
 
-    Person.findById(request.params.id).then(person => {
-        if (person) {
-            response.json(person)
-        } else {
-            response.status(404).end()
-        }
-    }).catch(error => next(error))
+	Person.findById(request.params.id).then(person => {
+		if (person) {
+			response.json(person)
+		} else {
+			response.status(404).end()
+		}
+	}).catch(error => next(error))
 
 
 })
@@ -88,34 +88,32 @@ app.get('/api/persons/:id', (request, response, next) => {
 } */
 
 app.delete('/api/persons/:id', (request, response, next) => {
-    console.log('Remove person', request.params.id)
-    Person.findByIdAndRemove(request.params.id).then(result => {
-        response.status(204).end()
-    }).catch(error => next(error))
+	console.log('Remove person', request.params.id)
+	Person.findByIdAndRemove(request.params.id).then(response.status(204).end()).catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-    console.log('Updating person', request.params.id, 'body', request.body)
-    Person.findById(request.params.id).then(p => {
-        p.phone = request.body.number
-        p.save().then(savedPerson => {
-            response.json(savedPerson)
-        }).catch(error => next(error))        
-    })
+	console.log('Updating person', request.params.id, 'body', request.body)
+	Person.findById(request.params.id).then(p => {
+		p.phone = request.body.number
+		p.save().then(savedPerson => {
+			response.json(savedPerson)
+		}).catch(error => next(error))        
+	})
 
 })
 
 app.post('/api/persons', (request, response, next) => {
-    console.log(request.body)
-    const body = request.body
+	console.log(request.body)
+	const body = request.body
 
-    if (!body.name || !body.number) {
-        return response.status(400).json({
-            error: 'name or phone missing'
-        })
-    }
+	if (!body.name || !body.number) {
+		return response.status(400).json({
+			error: 'name or phone missing'
+		})
+	}
 
-    /*     if (persons.find(p => p.name === body.name)) {
+	/*     if (persons.find(p => p.name === body.name)) {
             return response.status(400).json({
                 error: 'name alredy exists'
             })
@@ -133,19 +131,19 @@ app.post('/api/persons', (request, response, next) => {
 
 
 
-    const p = new Person({
-        name: body.name,
-        phone: body.number
-    })
+	const p = new Person({
+		name: body.name,
+		phone: body.number
+	})
         
-    p.save().then(savedPerson => {
-        response.json(savedPerson)
-    }).catch(error => next(error))
+	p.save().then(savedPerson => {
+		response.json(savedPerson)
+	}).catch(error => next(error))
 
 })
 
 const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+	console.log(`Server running on port ${PORT}`)
 })

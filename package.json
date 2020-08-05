@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/vabatista/fullstack_open_course_backend#readme",
   "devDependencies": {
+    "eslint": "^7.6.0",
     "nodemon": "^2.0.4"
   },
   "dependencies": {
