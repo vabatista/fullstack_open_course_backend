@@ -1,5 +1,7 @@
 //const mongoUrl = `mongodb+srv://fullstack:${password}@cluster0.mfj3m.azure.mongodb.net/phonebook?retryWrites=true&w=majority`
 const mongoose = require('mongoose')
+var uniqueValidator = require('mongoose-unique-validator')
+
 require('dotenv').config()
 
 const url = process.env.MONGODB_URI
@@ -15,10 +17,11 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     })
 
 mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 
 const schema = new mongoose.Schema({
-    name: String,
-    phone: String
+    name: {type: String, required: true, unique: true, minlength: 3},
+    phone: {type: String, required: true, minlength: 5}
 })
 
 schema.set('toJSON', {
