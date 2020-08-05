@@ -9,8 +9,8 @@
     "dev": "nodemon index.js",
     "build:ui": "rm -rf build && cd ../fullstack_open_course/part2/phonebook/ && npm run build --prod && cp -r build ../../../fullstack_open_course_backend/",
     "deploy": "git push heroku master",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",    
-    "logs:prod": "heroku logs --tail"        
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+    "logs:prod": "heroku logs --tail"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,9 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "mongoose": "^5.9.27",
     "morgan": "^1.10.0"
   }
 }
