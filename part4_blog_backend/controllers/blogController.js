@@ -1,20 +1,40 @@
 var mongoose = require('mongoose')
 var ValidationError = mongoose.Error.ValidationError
+const jwt = require('jsonwebtoken')
 
 const blogRouter = require('express').Router()
 const BlogEntry = require('../models/blog_entry')
+const User = require('../models/user_entry')
 
 blogRouter.get('/', async (request, response) => {
-	const blogs = await BlogEntry.find({})
+	const blogs = await BlogEntry.find({}).populate('user', { username: 1, name: 1 })
 	response.json(blogs)
 })
 
 blogRouter.post('/', async (request, response) => {
-	const blog = new BlogEntry(request.body)
+
+
+	const token = getTokenFrom(request)
+
+	const decodedToken = jwt.verify(token, process.env.SECRET)
+	if (!token || !decodedToken.id) {
+	  return response.status(401).json({ error: 'token missing or invalid' })
+	}
+
+	const user = await User.findById(request.body.userId)
+	const blog = new BlogEntry({title: request.body.title,
+		url: request.body.url,
+		likes: request.body.likes,
+		author: request.body.author,
+		user: user._id
+	})		
 	try {
-		const result = await blog.save()
-		response.status(201).json(result)
-	} catch(exception) {
+
+		const savedEntry = await blog.save()
+		user.blogs = user.blogs.concat(savedEntry._id)
+		await user.save()
+		response.status(201).json(savedEntry)
+	} catch (exception) {
 		if (exception instanceof ValidationError) {
 			response.status(400).json({
 				_status: 400,
@@ -64,5 +84,13 @@ blogRouter.put('/:id', (request, response, next) => {
 		})
 		.catch(error => next(error))
 })
+
+const getTokenFrom = request => {
+	const authorization = request.get('authorization')
+	if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+	  return authorization.substring(7)
+	}
+	return null
+  }
 
 module.exports = blogRouter

@@ -3,8 +3,9 @@ content-type: application/json
 
 {
 	"title": "This is a test title",
-	"author": "Vitor A. Batista",
+	"author": "Someone",
 	"url": "https://fullstackopen.com/",
-	"likes": 5
+	"likes": 5,
+	"userId": "5fa4376809a8d559202f6dad"
 }
 

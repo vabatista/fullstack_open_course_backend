@@ -38,7 +38,6 @@ test('blogs are returned as json', async () => {
 		.expect('Content-Type', /application\/json/)
 })
 
-
 test('test if name of identifier field is id', async () => {
 	const response = await api.get('/api/blogs')
 	expect(response.body.map(r => r.id)).toBeDefined()
