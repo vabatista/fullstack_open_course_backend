@@ -2,10 +2,10 @@ POST http://localhost:3001/api/blogs HTTP/1.1
 content-type: application/json
 
 {
-	"title": "This is a test title",
-	"author": "Someone",
-	"url": "https://fullstackopen.com/",
-	"likes": 5,
+	"title": "Title 2",
+	"author": "Vitor",
+	"url": "https://google.com/",
+	"likes": 1,
 	"userId": "5fa4376809a8d559202f6dad"
 }
 

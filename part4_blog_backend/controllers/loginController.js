@@ -8,7 +8,7 @@ loginController.post('/', async (request, response) => {
 	const body = request.body
 
 	const user = await User.findOne({ username: body.username })
-	console.log(user, await bcryptjs.compare(body.password, user.passwordHash))
+	
 	const passwordCorrect = user === null
 		? false
 		: await bcryptjs.compare(body.password, user.passwordHash)
@@ -25,7 +25,7 @@ loginController.post('/', async (request, response) => {
 	}
 
 	const token = jwt.sign(userForToken, process.env.SECRET)
-
+	console.log('Login sucessful')
 	response
 		.status(200)
 		.send({ token, username: user.username, name: user.name })

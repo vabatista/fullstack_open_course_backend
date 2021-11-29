@@ -21,6 +21,7 @@ const initialBlogs = [
 	},
 ]
 
+const validUser = 
 beforeEach(async () => {
 	await Blog.deleteMany({})
 

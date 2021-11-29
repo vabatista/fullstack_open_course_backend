@@ -16,23 +16,28 @@ blogRouter.post('/', async (request, response) => {
 
 	const token = getTokenFrom(request)
 
-	const decodedToken = jwt.verify(token, process.env.SECRET)
-	if (!token || !decodedToken.id) {
-	  return response.status(401).json({ error: 'token missing or invalid' })
+	const verifiedToken = jwt.verify(token, process.env.SECRET)
+	if (!token || !verifiedToken.id) {
+		console.log('token missing or invalid')
+		return response.status(401).json({ error: 'token missing or invalid' })
 	}
-
-	const user = await User.findById(request.body.userId)
-	const blog = new BlogEntry({title: request.body.title,
+	console.log('Token OK')
+	const user = await User.findById(verifiedToken.id)
+	console.log('Found user')
+	
+	const blog = new BlogEntry({
+		title: request.body.title,
 		url: request.body.url,
 		likes: request.body.likes,
 		author: request.body.author,
 		user: user._id
-	})		
+	})
 	try {
 
 		const savedEntry = await blog.save()
 		user.blogs = user.blogs.concat(savedEntry._id)
 		await user.save()
+		
 		response.status(201).json(savedEntry)
 	} catch (exception) {
 		if (exception instanceof ValidationError) {
@@ -88,9 +93,9 @@ blogRouter.put('/:id', (request, response, next) => {
 const getTokenFrom = request => {
 	const authorization = request.get('authorization')
 	if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-	  return authorization.substring(7)
+		return authorization.substring(7)
 	}
 	return null
-  }
+}
 
 module.exports = blogRouter
