@@ -8,7 +8,7 @@ loginController.post('/', async (request, response) => {
 	const body = request.body
 
 	const user = await User.findOne({ username: body.username })
-	
+
 	const passwordCorrect = user === null
 		? false
 		: await bcryptjs.compare(body.password, user.passwordHash)
@@ -18,6 +18,7 @@ loginController.post('/', async (request, response) => {
 			error: 'wrong username or password'
 		})
 	}
+
 
 	const userForToken = {
 		username: user.username,

@@ -31,6 +31,11 @@ app.use('/api/login', loginController)
 app.use('/api/blogs', blogController)
 app.use('/api/users', userController)
 
+if (process.env.NODE_ENV === 'test') {
+	const testingRouter = require('./controllers/testingController')
+	app.use('/api/testing', testingRouter)
+}
+
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 

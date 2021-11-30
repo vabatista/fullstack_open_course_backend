@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -21,16 +22,16 @@ const initialBlogs = [
 	},
 ]
 
-const validUser = 
-beforeEach(async () => {
-	await Blog.deleteMany({})
+const validUser =
+	beforeEach(async () => {
+		await Blog.deleteMany({})
 
-	let blogObject = new Blog(initialBlogs[0])
-	await blogObject.save()
+		let blogObject = new Blog(initialBlogs[0])
+		await blogObject.save()
 
-	blogObject = new Blog(initialBlogs[1])
-	await blogObject.save()
-})
+		blogObject = new Blog(initialBlogs[1])
+		await blogObject.save()
+	})
 
 test('blogs are returned as json', async () => {
 	await api
@@ -120,7 +121,7 @@ test('insert new without url and check if yields to http 400', async () => {
 
 describe('deletion of a blog', () => {
 	test('succeeds with status code 204 if id is valid', async () => {
-		
+
 		const blogsStart = await api.get('/api/blogs')
 
 		const blogToDelete = blogsStart.body[0]
@@ -128,7 +129,7 @@ describe('deletion of a blog', () => {
 		await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
 
 		const blogsFinal = await api.get('/api/blogs')
-		
+
 		const contents = blogsFinal.body.map(r => r.title)
 
 		expect(contents).not.toContain(blogToDelete.title)
@@ -142,11 +143,11 @@ describe('updating of a blog', () => {
 
 		const blogToUpdate = blogsStart.body[0]
 		blogToUpdate.title = sNewTitle
-		
-		await api.put( `/api/blogs/${blogToUpdate.id}`).send(blogToUpdate)
+
+		await api.put(`/api/blogs/${blogToUpdate.id}`).send(blogToUpdate)
 
 		const blogsFinal = await api.get('/api/blogs')
-		
+
 		const contents = blogsFinal.body.map(r => r.title)
 
 		expect(contents).toContain(sNewTitle)
